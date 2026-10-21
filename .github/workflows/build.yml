@@ -1,0 +1,66 @@
+name: build-base-images
+
+on:
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: "8.3.36"
+  PHP_MINOR: "8.3"
+  # commit of https://github.com/docker-library/php that contains PHP_VERSION — bump together
+  PHP_DOCKER_LIBRARY_SHA: "e3eaff845f7a9f7259c31da54dce0320b47a3bbd"
+  WP_VERSION: "7.1.3"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: docker-library/php
+          ref: ${{ env.PHP_DOCKER_LIBRARY_SHA }}
+          path: php-upstream
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: php-upstream/${{ env.PHP_MINOR }}/bookworm/apache
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/bitminds-og/php:${{ env.PHP_VERSION }}-apache-bookworm
+          cache-from: type=gha,scope=php
+          cache-to: type=gha,mode=max,scope=php
+
+  wordpress:
+    needs: php
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: wordpress/
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/bitminds-og/wordpress-base:${{ env.WP_VERSION }}-php${{ env.PHP_VERSION }}
+          cache-from: type=gha,scope=wordpress
+          cache-to: type=gha,mode=max,scope=wordpress
