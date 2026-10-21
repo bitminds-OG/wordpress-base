@@ -6,6 +6,7 @@ on:
 env:
   PHP_VERSION: "8.3.36"
   PHP_MINOR: "8.3"
+  PHP_SUITE: "trixie" # must match the suite upstream wordpress latest uses
   # commit of https://github.com/docker-library/php that contains PHP_VERSION — bump together
   PHP_DOCKER_LIBRARY_SHA: "e3eaff845f7a9f7259c31da54dce0320b47a3bbd"
   WP_VERSION: "7.1.3"
@@ -34,10 +35,10 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          context: php-upstream/${{ env.PHP_MINOR }}/bookworm/apache
+          context: php-upstream/${{ env.PHP_MINOR }}/${{ env.PHP_SUITE }}/apache
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/bitminds-og/php:${{ env.PHP_VERSION }}-apache-bookworm
+          tags: ghcr.io/bitminds-og/php:${{ env.PHP_VERSION }}-apache-${{ env.PHP_SUITE }}
           cache-from: type=gha,scope=php
           cache-to: type=gha,mode=max,scope=php
 

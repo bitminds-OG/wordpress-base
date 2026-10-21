@@ -8,7 +8,7 @@ Docker Hub images to catch up.
 
 | Image | Contents |
 |---|---|
-| `ghcr.io/bitminds-og/php:X.Y.Z-apache-bookworm` | PHP apache image, built from source via [docker-library/php](https://github.com/docker-library/php) |
+| `ghcr.io/bitminds-og/php:X.Y.Z-apache-trixie` | PHP apache image, built from source via [docker-library/php](https://github.com/docker-library/php) |
 | `ghcr.io/bitminds-og/wordpress-base:W.A.B-phpX.Y.Z` | Official WordPress image recipe ([docker-library/wordpress](https://github.com/docker-library/wordpress)) on top of our php image |
 
 ## Usage

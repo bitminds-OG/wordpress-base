@@ -3,7 +3,7 @@
 # Only change vs upstream: FROM points at our own php base (built from docker-library/php).
 # shortcut: manual sync with upstream, re-copy the file when bumping WordPress/PHP minor
 
-FROM ghcr.io/bitminds-og/php:8.3.36-apache-bookworm
+FROM ghcr.io/bitminds-og/php:8.3.36-apache-trixie
 
 # persistent dependencies
 RUN set -eux; \
